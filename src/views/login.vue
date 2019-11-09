@@ -46,7 +46,6 @@ export default {
   },
   methods: {
     toLogin() {
-      alert(1);
       this.$ajax
         .post("/oauth/token", this.$qs.stringify(this.logininfo))
         .then(res => {
