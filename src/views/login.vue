@@ -8,14 +8,14 @@
         <div class="login_h3">欢迎登录就诊问诊</div>
         <div class="login_h4">
           <div for="username">用户名</div>
-          <input id="username" type="text" placeholder="请输入用户名" v-model="username" />
+          <input id="username" type="text" placeholder="请输入用户名" v-model="logininfo.username" />
           <br />
           <div for="password" style="margin-top:20px">密码</div>
-          <input id="password" type="password" placeholder="请输入密码" v-model="password" />
+          <input id="password" type="password" placeholder="请输入密码" v-model="logininfo.password" />
         </div>
         <div class="login_h6">
           <div class="login_h5">
-            <div class="login_h8">登录</div>
+            <div class="login_h8" @click="toLogin">登录</div>
             <div class="h8">
               还没有账号，点击
               <router-link to="reg">注册</router-link>一下
@@ -34,8 +34,33 @@ export default {
       name: "ss",
       username: "",
       password: "",
-      tipinfo: ""
+      tipinfo: "",
+      logininfo: {
+        grant_type: "password",
+        client_id: "practice",
+        client_secret: "neuqsoft2019",
+        username: "330781198509077457",
+        password: ""
+      }
     };
+  },
+  methods: {
+    toLogin() {
+      alert(1);
+      this.$ajax
+        .post("/oauth/token", this.$qs.stringify(this.logininfo))
+        .then(res => {
+          window.console.log(res);
+          sessionStorage.setItem(
+            "access_token",
+            "bearer" + res.data.access_token
+          );
+          this.$router.push("/main");
+        })
+        .catch(res => {
+          window.console.log(res);
+        });
+    }
   }
 };
 </script>
@@ -136,6 +161,7 @@ export default {
   position: absolute;
   left: 170px;
   top: 14px;
+  cursor: hand;
 }
 input {
   outline: none;
