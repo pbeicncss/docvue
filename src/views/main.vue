@@ -56,76 +56,30 @@
         <div class="bottom">
           <div class="btab">
             <a-tabs defaultActiveKey="1" @change="callback">
-              <a-tab-pane tab="开处方" key="1">开处方</a-tab-pane>
-              <a-tab-pane tab="开检查" key="2" forceRender>开检查</a-tab-pane>
+              <a-tab-pane tab="开处方" key="1">
+                <RecipeTable ref="recipe" @onCompleted="postRecipe"></RecipeTable>
+              </a-tab-pane>
+              <a-tab-pane tab="开检查" key="2" forceRender>
+                <CheckTable ref="check" @onCompleted="postCheck"></CheckTable>
+              </a-tab-pane>
             </a-tabs>
           </div>
           <div class="bb1">
             <a-button type="primary" @click="showDrawer">+新建</a-button>
-            <a-button>保存</a-button>
+            <a-button @click="postCheck1">保存</a-button>
             <a-button>删除</a-button>
           </div>
         </div>
       </div>
     </div>
-    <div>
-      <a-drawer
-        :title="addText"
-        :width="720"
-        @close="onClose"
-        :visible="visible"
-        :wrapStyle="{height: 'calc(100% - 108px)',overflow: 'auto',paddingBottom: '108px'}"
-      >
-        <a-form :form="form" layout="vertical">
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item label="Name">
-                <a-input
-                  v-decorator="['name', {
-                  rules: [{ required: true, message: 'Please enter user name' }]
-                }]"
-                  placeholder="Please enter user name"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item label="Url">
-                <a-input
-                  v-decorator="['url', {
-                  rules: [{ required: true, message: 'please enter url' }]
-                }]"
-                  style="width: 100%"
-                  addonBefore="http://"
-                  addonAfter=".com"
-                  placeholder="please enter url"
-                />
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
-        <div
-          :style="{
-          position: 'absolute',
-          left: 0,
-          bottom: 0,
-          width: '100%',
-          borderTop: '1px solid #e9e9e9',
-          padding: '10px 16px',
-          background: '#fff',
-          textAlign: 'right',
-        }"
-        >
-          <a-button :style="{marginRight: '8px'}" @click="onClose">Cancel</a-button>
-          <a-button @click="onClose" type="primary">Submit</a-button>
-        </div>
-      </a-drawer>
-    </div>
   </div>
 </template>
 <script>
 import DoctorHeader from "@/components/header/doc-header";
+import RecipeTable from "@/components/table/recipe-table-2";
+import CheckTable from "@/components/table/check-table";
 export default {
-  components: { DoctorHeader },
+  components: { DoctorHeader, RecipeTable, CheckTable },
   data() {
     return {
       form: this.$form.createForm(this),
@@ -169,14 +123,59 @@ export default {
     // }
   },
   methods: {
+    postRecipe(val) {
+      alert("postRecipe");
+      window.console.log(val);
+      // const config = {
+      //   url: `api/v1/diagnose/${this.diagnoseId}/recipe`,
+      //   headers: {
+      //     "X-CARD-CODE": this.patientCardQRCode
+      //   },
+      //   data: {
+      //     medicine: val
+      //   }
+      // };
+      // postWithAuth(config)
+      //   .then(res => {
+      //     debug.log("医生提交处方信息成功", res);
+      //     this.$message.success("提交处方信息成功");
+      //   })
+      //   .catch(err => {
+      //     debug.error("医生提交处方信息失败", err);
+      //     this.$message.error("提交处方信息失败");
+      //   });
+    },
+    postCheck1() {
+      if (this.iswhich === "1") {
+        this.$refs.recipe.onDrawerVisible();
+      } else {
+        window.console.log(this.$refs.check.tableData);
+      }
+      // const config = {
+      //   url: `api/v1/diagnose/${this.diagnoseId}/check`,
+      //   headers: {
+      //     "X-CARD-CODE": this.patientCardQRCode
+      //   },
+      //   data: val
+      // };
+      // postWithAuth(config)
+      //   .then(res => {
+      //     debug.log("医生提交检查信息成功", res);
+      //     this.$message.success("提交检查信息成功");
+      //   })
+      //   .catch(err => {
+      //     debug.error("医生提交检查信息失败", err);
+      //     this.$message.error("提交检查信息失败");
+      //   });
+    },
     callback(key) {
       window.console.log(key);
       this.iswhich = key;
-      if (key === "1") {
-        this.addText = "新增处方";
-      } else {
-        this.addText = "新增检查";
-      }
+      // if (key === "1") {
+      //   this.addText = "新增处方";
+      // } else {
+      //   this.addText = "新增检查";
+      // }
     },
     getDoctorAndPatients() {
       this.$ajax
@@ -193,7 +192,12 @@ export default {
         });
     },
     showDrawer() {
-      this.visible = true;
+      // this.visible = true;
+      if (this.iswhich === "1") {
+        this.$refs.recipe.onDrawerVisible();
+      } else {
+        this.$refs.check.onDrawerVisible();
+      }
     },
     onClose() {
       this.visible = false;
@@ -212,7 +216,7 @@ export default {
   background-color: rgb(214, 90, 177);
 }
 #main {
-  width: 100vw;
+  width: 100%;
   min-height: 100%;
   background: rgba(240, 242, 245, 1);
   background: #f0f2f5;
@@ -325,7 +329,7 @@ export default {
       left: 21px;
       right: 21px;
       bottom: 10px;
-      width: 300px;
+      width: 80%;
       height: 43px;
       background: rgba(0, 144, 255, 1);
       border-radius: 4px;
@@ -428,7 +432,7 @@ export default {
       }
     }
     .bottom {
-      height: 374px;
+      min-height: 374px;
       background: rgba(255, 255, 255, 1);
       margin-bottom: 18px;
       padding: 0 14px;
