@@ -1,11 +1,5 @@
 <template>
   <div class="check-table">
-    <!-- actions -->
-    <div class="actions">
-      <a-button class="action" type="primary" @click="onDrawerVisible">新建</a-button>
-      <a-button class="action" type="danger" @click="onDeleteTableData">删除</a-button>
-      <a-button class="action" @click="onCompleted">保存</a-button>
-    </div>
     <!-- form -->
     <a-drawer title="开检查" :width="400" placement="right" :closable="false" :visible="drawerVisible">
       <a-form :form="form" @submit="onFormSubmit">
@@ -73,25 +67,13 @@
         </div>
         <div>
           <img src="@/assets/c3.png" />
-          <div class="text">检查时间：{{ checks.diagnosecode }}</div>
+          <div class="text">检查时间：2019-11-22</div>
+        </div>
+        <div class="inc1">
+          <img src="@/assets/c4.png" @click="onDelData(checks.diagnosecode)" />
         </div>
       </a-card>
     </div>
-    <a-table
-      :columns="tableColumns"
-      :dataSource="tableData"
-      :pagination="false"
-      :rowKey="record => record.diagnosecode"
-      bordered
-      size="small"
-      :locale="{ emptyText: '暂无检查' }"
-      :rowSelection="{
-        selectedRowKeys: tableSelectedRowKeys,
-        onChange: onTableSelectedChange
-      }"
-    >
-      <template slot="money" slot-scope="text">￥{{ text }}</template>
-    </a-table>
     <div class="amount">
       合计：
       <span style="color: red;">￥{{ amount }}</span>
@@ -163,12 +145,22 @@ export default {
     onDrawerVisible() {
       this.drawerVisible = true;
     },
+    handleChange() {
+      window.console.log("change");
+    },
     onDrawerInvisible() {
       this.drawerVisible = false;
     },
     // table
     onTableSelectedChange(tableSelectedRowKeys) {
       this.tableSelectedRowKeys = tableSelectedRowKeys;
+    },
+    onDelData(diagnosecode) {
+      window.console.log(diagnosecode);
+      this.tableData = this.tableData.filter(item => {
+        return item.diagnosecode != diagnosecode;
+      });
+      window.console.log(this.tableData);
     },
     onDeleteTableData() {
       this.tableData = this.tableData.filter(item => {
@@ -199,6 +191,7 @@ export default {
     margin-left: 30px;
     margin-top: 20px;
     box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, 0.09);
+    position: relative;
     div {
       padding-bottom: 10px;
       height: 35px;
@@ -215,6 +208,11 @@ export default {
         margin-top: 10px;
         margin-left: 5px;
       }
+    }
+    .inc1 {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
     }
   }
 }

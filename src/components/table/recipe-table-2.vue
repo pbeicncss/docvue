@@ -1,11 +1,5 @@
 <template>
   <div class="recipe-table-2">
-    <!-- actions -->
-    <div class="actions">
-      <a-button class="action" type="primary" @click="onDrawerVisible">新建</a-button>
-      <a-button class="action" type="danger" @click="onDeleteTableData">删除</a-button>
-      <a-button class="action" @click="onCompleted">保存</a-button>
-    </div>
     <!-- form -->
     <a-drawer title="开处方" :width="600" placement="right" :closable="false" :visible="drawerVisible">
       <a-form :form="form" @submit="onFormSubmit" :layout="formLayout">
@@ -313,7 +307,6 @@ export default {
     },
     onDeleteTableData() {
       this.tableData = this.tableData.filter(item => {
-        alert(item.key);
         return this.tableSelectedRowKeys.indexOf(item.key) < 0;
       });
       this.tableSelectedRowKeys = [];

@@ -51,6 +51,7 @@
           <div class="btns">
             <button class="button1" style="margin-right: 15px;">保存诊断</button>
             <button class="button2" style="border:1px solid #0090FF;color:#0090FF">结束诊断</button>
+            <button class="button3" style="margin-left: 15px;" @click="toSaoMa">开新诊断</button>
           </div>
         </div>
         <div class="bottom">
@@ -60,14 +61,14 @@
                 <RecipeTable ref="recipe" @onCompleted="postRecipe"></RecipeTable>
               </a-tab-pane>
               <a-tab-pane tab="开检查" key="2" forceRender>
-                <CheckTable ref="check" @onCompleted="postCheck"></CheckTable>
+                <CheckTable ref="check"></CheckTable>
               </a-tab-pane>
             </a-tabs>
           </div>
           <div class="bb1">
             <a-button type="primary" @click="showDrawer">+新建</a-button>
             <a-button @click="postCheck1">保存</a-button>
-            <a-button>删除</a-button>
+            <a-button @click="delrecipe">删除</a-button>
           </div>
         </div>
       </div>
@@ -97,9 +98,9 @@ export default {
   },
   created() {
     this.getDoctorAndPatients();
-    // setInterval(() => {
-    //   this.getDoctorAndPatients();
-    // }, 10000);
+    setInterval(() => {
+      this.getDoctorAndPatients();
+    }, 10000);
   },
   computed: {
     // whichcolor: function() {
@@ -145,9 +146,14 @@ export default {
       //     this.$message.error("提交处方信息失败");
       //   });
     },
+    delrecipe() {
+      if (this.iswhich === "1") {
+        this.$refs.recipe.onDeleteTableData();
+      }
+    },
     postCheck1() {
       if (this.iswhich === "1") {
-        this.$refs.recipe.onDrawerVisible();
+        window.console.log(this.$refs.recipe.tableData);
       } else {
         window.console.log(this.$refs.check.tableData);
       }
@@ -204,6 +210,9 @@ export default {
     },
     onScanPatientCardQRCode() {
       window.console.log("1");
+    },
+    toSaoMa() {
+      this.$router.push("/saoma");
     }
   }
 };
@@ -428,6 +437,17 @@ export default {
           color: rgba(255, 255, 255, 1);
           line-height: 16px;
           padding: 5px 10px;
+        }
+        .button3 {
+          border: none;
+          border-radius: 3px;
+          font-size: 10px;
+          font-weight: 400;
+          background: rgba(255, 255, 255, 1);
+          line-height: 16px;
+          padding: 5px 10px;
+          border: 1px solid #29f365;
+          color: #f1a312;
         }
       }
     }
