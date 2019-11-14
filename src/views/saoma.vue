@@ -9,10 +9,13 @@
       </div>
       <div class="saoma">
         <div>
-          <a-input class="ainput" placeholder="请先扫获取患者授权，查询患者最近三次历史就诊记录" />
+          <a-input class="ainput" v-model="xcode" placeholder="请先扫获取患者授权，查询患者最近三次历史就诊记录" />
         </div>
         <div class="pname">
-          <a-button type="primary" @click="getRecentDiagnose">扫码</a-button>
+          <a-button type="primary" @click="getRecentDiagnoseMock">扫码(Mock)</a-button>
+        </div>
+        <div class="pname">
+          <a-button type="primary" @click="getRecentDiagnose">读卡</a-button>
         </div>
         <div class="pname">
           <a-button type="primary">录入诊断</a-button>
@@ -172,7 +175,9 @@ export default {
       loading: false,
       columns,
       recipeamount: 0,
-      checkamount: 0
+      checkamount: 0,
+      xcode: "",
+      tipinfo: ""
     };
   },
   created() {
@@ -227,11 +232,11 @@ export default {
           window.console.log(res);
         });
     },
-    getRecentDiagnose() {
+    getRecentDiagnoseMock() {
       this.recents = [];
       //查询医生信息
       this.$ajax
-        .get("/api/v1/diagnose/recent")
+        .get("/api/v1/diagnose/recentaa")
         .then(res => {
           window.console.log(res);
           this.recents = res.data.list;
@@ -243,12 +248,70 @@ export default {
           window.console.log(res);
         });
     },
+    getRecentDiagnose() {
+      this.recents = [];
+      if (this.xcode === "") {
+        this.tipinfo = "输入患者二维码";
+        this.error();
+        return;
+      }
+      this.$ajax
+        .get("/api/v1/diagnose/recent", {
+          headers: {
+            "X-CARD-CODE": this.xcode
+          }
+        })
+        .then(res => {
+          window.console.log(res);
+          this.recents = res.data;
+          this.checkdtos = res.data[0].checkDTOS;
+          this.getSingleMoney(res.data[0].recipe.medicine);
+          //   this.recipedata = res.data.list[0].recipe.medicine;
+        })
+        .catch(res => {
+          window.console.log(res);
+        });
+      this.$ajax
+        .post("/api/v1/diagnose", {
+          params: "1",
+          headers: {
+            "X-CARD-CODE": this.xcode
+          }
+        })
+        .then(res => {
+          window.console.log(res);
+        })
+        .catch(res => {
+          window.console.log(res);
+        });
+    },
     getSingleMoney(colsss) {
       for (let i = 0; i < colsss.length; i++) {
         const element = colsss[i];
         element.allmoney = (element.medicinecnt * element.money).toFixed(2);
       }
       this.recipedata = colsss;
+    },
+    getSingleMoney1(colsss) {
+      for (let i = 0; i < colsss.length; i++) {
+        const element = colsss[i];
+        element.key = "key" + i;
+        element.allmoney = (element.medicinecnt * element.money).toFixed(2);
+      }
+      this.recipedata = colsss;
+    },
+    success() {
+      this.$success({
+        title: "成功提示",
+        // JSX support
+        content: this.tipinfo
+      });
+    },
+    error() {
+      this.$error({
+        title: "错误提示",
+        content: this.tipinfo
+      });
     }
   }
 };

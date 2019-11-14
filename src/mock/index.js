@@ -5,7 +5,7 @@ const data = {
     money: "@float(60, 100, 20, 63.2)",
     doctorname: "@cname"
 };
-Mock.mock("/api/v1/diagnose/recent", "get", {
+Mock.mock("/api/v1/diagnose/recentaa", "get", {
     'list|1-3': [{
         "checkDTOS|3-7": [{
             "aka130": "string",

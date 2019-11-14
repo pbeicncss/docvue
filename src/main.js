@@ -34,10 +34,14 @@ Vue.config.productionTip = false;
 axios.interceptors.request.use(
   config => {
     let authtoken = sessionStorage.getItem("access_token");
+    // let xcode = sessionStorage.getItem("xcode");
     // alert(2);
     if (authtoken !== null) {
       config.headers.Authorization = authtoken;
     }
+    // if (xcode) {
+    //   config.headers["X-CARD-CODE"] = xcode;
+    // }
     return config;
   },
   error => {
