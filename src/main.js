@@ -6,6 +6,7 @@ import qs from "qs";
 import store from "./store";
 import Antd from "ant-design-vue";
 import "ant-design-vue/dist/antd.css";
+import Mock from "@/mock";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
@@ -22,19 +23,25 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.component("font-awesome-layers", FontAwesomeLayers);
 Vue.component("font-awesome-layers-text", FontAwesomeLayersText);
 
+Vue.use(Mock);
 Vue.use(Antd);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.prototype.$ajax = axios;
 Vue.prototype.$qs = qs;
 
 Vue.config.productionTip = false;
+//为请求加token
 axios.interceptors.request.use(
   config => {
     let authtoken = sessionStorage.getItem("access_token");
+    // let xcode = sessionStorage.getItem("xcode");
     // alert(2);
     if (authtoken !== null) {
       config.headers.Authorization = authtoken;
     }
+    // if (xcode) {
+    //   config.headers["X-CARD-CODE"] = xcode;
+    // }
     return config;
   },
   error => {
